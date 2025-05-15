@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tài Xỉu MD5</title>
+  <style>
+    body {
+      background-color: #111;
+      color: white;
+      font-family: monospace;
+      text-align: center;
+      padding-top: 50px;
+    }
+    input {
+      padding: 10px;
+      font-size: 18px;
+      width: 300px;
+      text-align: center;
+    }
+    .output {
+      margin-top: 20px;
+      font-size: 20px;
+    }
+    .colored-text span {
+      display: inline-block;
+      transition: color 0.5s;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>══════════════════</h2>
+  <h1>Skittle</h1>
+  <h2>Tài Xỉu MD5</h2>
+  <p>version: v1.0.5</p>
+  <h2>══════════════════</h2>
+
+  <input type="text" id="md5Input" placeholder="Nhập chuỗi MD5" maxlength="32">
+  <div class="output" id="result"></div>
+
+  <script>
+    function isValidMD5(str) {
+      return /^[a-f0-9]{32}$/i.test(str);
+    }
+
+    function d4(md5) {
+      const bytes = [];
+      for (let i = 0; i < 32; i += 2) {
+        bytes.push(parseInt(md5.slice(i, i + 2), 16));
+      }
+
+      const total = bytes.reduce((acc, b) => acc + b, 0);
+      const seed = (total * bytes[bytes.length - 1]) % 10000;
+      let tai = (seed % 100) + (bytes[0] % 10) / 10;
+      tai = Math.max(0, Math.min(tai, 100));
+      const xiu = 100 - tai;
+
+      return { tai: tai.toFixed(2), xiu: xiu.toFixed(2) };
+    }
+
+    function animateText(text, container) {
+      container.innerHTML = "";
+      const chars = text.split("");
+      chars.forEach((char, i) => {
+        const span = document.createElement("span");
+        span.textContent = char;
+        span.style.color = `rgb(255, ${Math.floor((i / chars.length) * 165)}, 0)`;
+        container.appendChild(span);
+      });
+    }
+
+    const input = document.getElementById("md5Input");
+    const result = document.getElementById("result");
+
+    input.addEventListener("input", () => {
+      const val = input.value.trim().toLowerCase();
+      if (val === "thoat") {
+        result.textContent = "Chương trình kết thúc.";
+        return;
+      }
+
+      if (!isValidMD5(val)) {
+        animateText("❌ Không phải MD5 hợp lệ", result);
+        return;
+      }
+
+      const { tai, xiu } = d4(val);
+      animateText(`✅ Tỷ lệ Tài: ${tai}% | Tỷ lệ Xỉu: ${xiu}%`, result);
+    });
+  </script>
+
+</body>
+</html>
