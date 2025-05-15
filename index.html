@@ -11,16 +11,43 @@
       text-align: center;
       padding-top: 50px;
     }
+
     input {
       padding: 10px;
       font-size: 18px;
       width: 300px;
       text-align: center;
+      border: none;
+      border-radius: 5px;
+      margin-bottom: 10px;
     }
+
+    .btn-group {
+      margin: 10px;
+    }
+
+    button {
+      padding: 10px 15px;
+      margin: 5px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #222;
+      color: white;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #444;
+    }
+
     .output {
       margin-top: 20px;
       font-size: 20px;
+      min-height: 30px;
     }
+
     .colored-text span {
       display: inline-block;
       transition: color 0.5s;
@@ -36,6 +63,12 @@
   <h2>══════════════════</h2>
 
   <input type="text" id="md5Input" placeholder="Nhập chuỗi MD5" maxlength="32">
+  
+  <div class="btn-group">
+    <button onclick="pasteClipboard()">📋 Dán</button>
+    <button onclick="clearInput()">❌ Xóa</button>
+  </div>
+
   <div class="output" id="result"></div>
 
   <script>
@@ -69,11 +102,11 @@
       });
     }
 
-    const input = document.getElementById("md5Input");
-    const result = document.getElementById("result");
-
-    input.addEventListener("input", () => {
+    function updateResult() {
+      const input = document.getElementById("md5Input");
       const val = input.value.trim().toLowerCase();
+      const result = document.getElementById("result");
+
       if (val === "thoat") {
         result.textContent = "Chương trình kết thúc.";
         return;
@@ -86,7 +119,26 @@
 
       const { tai, xiu } = d4(val);
       animateText(`✅ Tỷ lệ Tài: ${tai}% | Tỷ lệ Xỉu: ${xiu}%`, result);
-    });
+    }
+
+    document.getElementById("md5Input").addEventListener("input", updateResult);
+
+    function clearInput() {
+      const input = document.getElementById("md5Input");
+      const result = document.getElementById("result");
+      input.value = "";
+      result.innerHTML = "";
+    }
+
+    async function pasteClipboard() {
+      try {
+        const text = await navigator.clipboard.readText();
+        document.getElementById("md5Input").value = text.trim();
+        updateResult();
+      } catch (err) {
+        alert("Không thể dán. Trình duyệt có thể chặn quyền clipboard.");
+      }
+    }
   </script>
 
 </body>
